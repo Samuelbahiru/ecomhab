@@ -107,5 +107,28 @@ def processOrder(request):
 
 	email.fail_silently = False
 	email.send()
+	
+	#FOR THE TEXT MESSAGE 
+	from twilio.rest import Client
+	import os
+	if request.user.is_authenticated:
+		print('')
+	else:
+		customer, order = guestOrder(request, data)
+	
+	account_sid = os.environ['TWILIO_ACCOUNT_SID']='ACaeb7852e42f678f1fc35bd120c325f56'
+	auth_token = os.environ['TWILIO_AUTH_TOKEN']='3b34fa8689d5f1c2e08bf1823d686c99'
+	
+
+	client = Client(account_sid, auth_token)
+
+	message = client.messages \
+		.create(
+			body='Thank you for purchasing from ECOMHABESHA store',
+			from_ = +12569352159,
+			to = customer.number
+		)
+
+	print(message.sid)
 	return JsonResponse('Payment successfull', safe=False)
 
